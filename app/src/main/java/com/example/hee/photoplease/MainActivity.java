@@ -31,21 +31,44 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-// Create an instance of Camera
-        mCamera = getCameraInstance();
 
-        // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
+// Create an instance of Camera
+        if(hasPermissions(this,Manifest.permission.CAMERA)){
+            mCamera = getCameraInstance();
+
+            // Create our Preview view and set it as the content of our activity.
+            mPreview = new CameraPreview(this, mCamera);
+            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+            preview.addView(mPreview);
+        }
+
         setupStorage();
 
+    }
+
+    public void onResume(){
+        super.onResume();
+        if(hasPermissions(this,Manifest.permission.CAMERA)){
+            mCamera = getCameraInstance();
+
+            // Create our Preview view and set it as the content of our activity.
+            mPreview = new CameraPreview(this, mCamera);
+            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+            preview.addView(mPreview);
+        }
+    }
+
+    public void onPause(){
+        super.onPause();
+        if (mCamera != null){
+            mCamera.release();        // release the camera for other applications
+            mCamera = null;
+        }
     }
 
     public void setupStorage(){
@@ -56,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         // get an image from the camera
                         mCamera.takePicture(null, null, mPicture);
+                      //  mCamera.stopPreview();
+                        // normally takePicture() will cause preview to stop but for some unknown reason it works fine on galaxy s7 edge
+                        // maybe need to stopPreview() manually just to show how the photo looks like to useR? 
                     }
                 }
         );
