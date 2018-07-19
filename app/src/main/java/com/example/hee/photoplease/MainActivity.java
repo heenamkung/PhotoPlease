@@ -132,4 +132,10 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    /* To do:
+        1. image captured is rotated. fix it by http://theeye.pe.kr/archives/1338 (very old link) or sth else. most likely needs to deal with bitmap
+        2. issue just below mCamera.takePicture() . test it out on other android devices
+        3. after capturing photo, it's saved but doesn't show up on gallery. need to refresh media scanner? https://stackoverflow.com/questions/22780502/image-not-show-in-gallery
+
+    */
 }
